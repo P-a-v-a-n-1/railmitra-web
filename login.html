@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RailMitra Web App</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom Styles -->
+    <style>
+        /* Gradient animation with a smooth transition */
+        @keyframes gradient-shift {
+            0% {
+                background-position: 0% 50%; /* Start at the left */
+            }
+            100% {
+                background-position: 100% 50%; /* End at the right */
+            }
+        }
+
+        /* Gradient background with smooth animation */
+        .bg-smooth-gradient {
+            background: linear-gradient(90deg, #5356FF, #378CE7, #67C6E3, #DFFF5F); /* Color palette */
+            background-size: 300% 300%; /* Large size for smooth animation */
+            animation: gradient-shift 30s linear infinite; /* Slow and continuous animation */
+        }
+
+        /* Custom style for image placeholders */
+        .image-placeholder {
+            border: 2px dashed #6c757d; /* Dashed gray border */
+            height: 200px; /* Placeholder height */
+            width: 100%; /* Full width */
+            text-align: center; /* Center text */
+            line-height: 200px; /* Vertically center text */
+            color: #6c757d; /* Gray text */
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef); /* Light gradient */
+        }
+
+        /* Custom button styles */
+        .btn-primary {
+            background-color: #5356FF; /* Deep blue */
+            color: white; /* White text */
+        }
+
+        /* Smooth scrolling for the entire document */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-smooth-gradient text-white"> <!-- Gradient background with smooth animation -->
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary"> <!-- Deep blue navbar -->
+        <a class="navbar-brand" href="#">RailMitra</a> <!-- Brand -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <!-- Toggle -->
+            <span class="navbar-toggler-icon"></span> <!-- Icon for toggle -->
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav"> <!-- Responsive section -->
+            <ul class="navbar-nav"> <!-- Navigation items -->
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#home">Home</a> <!-- Navigation link -->
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#schedules">Train Schedules</a> <!-- Navigation link -->
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#about">About</a> <!-- Navigation link -->
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Content Section -->
+    <div class="container mt-5"> <!-- Bootstrap container -->
+       <!-- Home Section -->
+<div class="card mb-4"> <!-- Bootstrap card with shadow -->
+  <div class="card-body"> <!-- Card content -->
+      <h2 id="home" class="card-title text-primary">Welcome to RailMitra</h2> <!-- Section title -->
+      <div class="image-placeholder">Image Placeholder</div> <!-- Placeholder for images -->
+      <p class="mt-4">RailMitra is your ultimate companion for planning train journeys across India. With real-time updates, seamless booking options, and detailed train information, we're here to ensure your travels are smooth and stress-free.</p> <!-- Descriptive text -->
+      <a href="#schedules" class="btn btn-primary mt-4">Get Started</a> <!-- CTA button -->
+  </div>
+</div>
+
+<!-- Train Schedules Section -->
+<div class="card mb-4"> <!-- Bootstrap card -->
+  <div class="card-body"> <!-- Card content -->
+      <h2 id="schedules" class="card-title text-primary">Train Schedules</h2> <!-- Section heading -->
+      <div class="image-placeholder">Image Placeholder</div> <!-- Placeholder -->
+      <p class="mt-4">Explore the latest train schedules to find the best options for your journey. With a variety of express, superfast, and local trains, RailMitra helps you find the perfect match for your travel needs. Stay updated with real-time information and plan your itinerary with ease.</p> <!-- Descriptive text -->
+      <ul class="list-unstyled mt-4"> <!-- Unordered list -->
+          <li>Express 101: 10:00 AM</li>
+          <li>Local 202: 11:30 AM</li> <!-- Additional schedules -->
+      </ul>
+  </div>
+</div>
+
+<!-- About Section -->
+<div class="card"> <!-- Bootstrap card -->
+  <div class="card-body"> <!-- Card content -->
+      <h2 id="about" class="card-title text-primary">About RailMitra</h2> <!-- Section heading -->
+      <div class="image-placeholder">Image Placeholder</div> <!-- Placeholder -->
+      <p class="mt-4">RailMitra is a leading platform dedicated to making train travel in India more accessible and enjoyable. Our mission is to provide travelers with accurate and real-time information, seamless booking experiences, and valuable insights into their journeys. Learn more about our commitment to delivering quality service to our users.</p> <!-- Descriptive text -->
+  </div>
+</div>
+
+
+    <!-- Footer -->
+    <footer class="bg-primary text-white text-center py-4"> <!-- Footer with deep blue -->
+        &copy; 2024 RailMitra. All rights reserved.
+    </footer>
+
+    <!-- Bootstrap JS and Dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script> <!-- jQuery -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script> <!-- Bootstrap JS -->
+</body>
+</html>
