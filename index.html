@@ -58,32 +58,15 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Hover shadow */
         }
 
-        /* Responsive Media Queries */
-        @media (max-width: 767px) {
-            .navbar {
-                flex-direction: column; /* Stack navbar items vertically */
-            }
-            .user-icon {
-                font-size: 1rem; /* Smaller size for smaller screens */
-            }
-            .card {
-                padding: 1rem; /* Additional padding for smaller screens */
-            }
-        }
-
-        @media (min-width: 768px) and (max-width: 991px) {
-            .card {
-                padding: 1.5rem; /* Medium padding for medium screens */
-            }
-        }
-
-        @media (min-width: 992px) {
-            .navbar {
-                flex-direction: row; /* Horizontal arrangement for larger screens */
-            }
-            .card {
-                padding: 2rem; /* Larger padding for larger screens */
-            }
+        /* Image placeholder styles */
+        .image-placeholder {
+            width: 100%; /* Full width */
+            height: 200px; /* Defined height */
+            display: flex; /* Flexbox for centering */
+            justify-content: center; /* Horizontally centered */
+            align-items: center; /* Vertically centered */
+            background-color: #f8f9fa; /* Light gray background */
+            color: #6c757d; /* Gray text color */
         }
     </style>
 </head>
@@ -103,13 +86,13 @@
                     <a class="nav-link text-white" href="#schedules">Train Schedules</a> <!-- Navigation link -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="#ewallet">E-Wallet</a> <!-- Navigation link -->
+                    <a class="nav-link text-white" href="#ewallet">E-Wallet</a> <!-- E-Wallet link -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="#reservations">Reservations</a> <!-- Navigation link -->
+                    <a class="nav-link text-white" href="#reservations">Reservations</a> <!-- Reservations link -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="#community-chat">Community Chat</a> <!-- Navigation link -->
+                    <a class="nav-link text-white" href="#community-chat">Community Chat</a> <!-- Community Chat link -->
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-white" href="#user-profile"><i class="fas fa-user user-icon"></i></a> <!-- User icon -->
@@ -124,25 +107,31 @@
        <div class="card mb-4"> <!-- Bootstrap card with shadow -->
            <div class="card-body"> <!-- Card content -->
                <h2 id="home" class="card-title text-primary">Welcome to RailMitra</h2> <!-- Section title -->
-               <div class="image-placeholder">Image Placeholder</div> <!-- Placeholder for images -->
+               <div class="image-placeholder">
+                   <img src="https://via.placeholder.com/200" alt="Image Placeholder" style="max-width: 100%; height: auto;" /> <!-- Placeholder image -->
+               </div> <!-- Placeholder for images -->
                <p class="mt-4">RailMitra is your ultimate companion for planning train journeys across India. With real-time updates, seamless booking options, and detailed train information, we're here to ensure your travels are smooth and stress-free.</p> <!-- Descriptive text -->
            </div>
        </div>
 
        <!-- Train Schedules Section -->
-       <div class="card mb-4"> <!-- Bootstrap card -->
+       <a href="train-schedules.html" class="card mb-4"> <!-- Link to Train Schedules page -->
            <div class="card-body"> <!-- Card content -->
                <h2 id="schedules" class="card-title text-primary">Train Schedules</h2> <!-- Section heading -->
-               <div class image-placeholder">Image Placeholder</div> <!-- Placeholder -->
+               <div class="image-placeholder">
+                   <img src="https://via.placeholder.com/200" alt="Image Placeholder" style="max-width: 100%; height: auto;" /> <!-- Placeholder image -->
+               </div> <!-- Placeholder -->
                <p class="mt-4">Explore the latest train schedules to find the best options for your journey. With a variety of express, superfast, and local trains, RailMitra helps you find the perfect match for your travel needs.</p> <!-- Descriptive text -->
            </div>
-       </div>
+       </a>
 
        <!-- E-Wallet Section -->
        <a href="ewallet.html" class="card mb-4"> <!-- Link to E-Wallet page -->
            <div class="card-body"> <!-- Card content -->
                <h2 id="ewallet" class="card-title text-primary">E-Wallet</h2> <!-- Section heading -->
-               <div class="image-placeholder">Image Placeholder</div> <!-- Placeholder -->
+               <div class="image-placeholder">
+                   <img src="https://via.placeholder.com/200" alt="Image Placeholder" style="max-width: 100%; height: auto;" /> <!-- Placeholder image -->
+               </div>
                <p class="mt-4">Use our secure e-wallet to manage your payments, add funds, and make transactions with ease during your train journeys.</p> <!-- Descriptive text -->
            </div>
        </a>
@@ -151,7 +140,9 @@
        <a href="reservation.html" class="card mb-4"> <!-- Link to Reservations page -->
            <div class="card-body"> <!-- Card content -->
                <h2 class="card-title text-primary">Reservations</h2> <!-- Section heading -->
-               <div class="image-placeholder">Image Placeholder</div> <!-- Placeholder -->
+               <div class="image-placeholder">
+                   <img src="https://via.placeholder.com/200" alt="Image Placeholder" style="max-width: 100%; height: auto;" /> <!-- Placeholder image -->
+               </div>
                <p class="mt-4">Book your train reservations with RailMitra. Find the best seats, check availability, and manage your reservations easily.</p> <!-- Descriptive text -->
            </div>
        </a>
@@ -160,7 +151,9 @@
        <a href="community-chat.html" class="card"> <!-- Link to Community Chat page -->
            <div class="card-body"> <!-- Card content -->
                <h2 class="card-title text-primary">Community Chat</h2> <!-- Section heading -->
-               <div class="image-placeholder">Image Placeholder</div> <!-- Placeholder -->
+               <div class="image-placeholder">
+                   <img src="https://via.placeholder.com/200" alt="Image Placeholder" style="max-width: 100%; height: auto;" /> <!-- Placeholder image -->
+               </div>
                <p class="mt-4">Join our community chat to connect with other travelers. Share your experiences, get tips, and stay updated with the latest travel information.</p> <!-- Descriptive text -->
            </div>
        </a>
