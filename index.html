@@ -51,22 +51,23 @@
         /* Card Styling */
         .card {
             transition: transform 0.3s, box-shadow 0.3s; /* Smooth animations */
+            background-size: cover; /* Cover the entire card */
+            background-position: center; /* Center the background image */
+            height: 400px;
+             /* Set card height to 100% */
         }
 
         .card:hover {
             transform: translateY(-5px); /* Hover effect */
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Hover shadow */
+            text-decoration: none;
         }
 
         /* Image placeholder styles */
-        .image-placeholder {
-            width: 100%; /* Full width */
-            height: 200px; /* Defined height */
-            display: flex; /* Flexbox for centering */
-            justify-content: center; /* Horizontally centered */
-            align-items: center; /* Vertically centered */
-            background-color: #f8f9fa; /* Light gray background */
-            color: #6c757d; /* Gray text color */
+        .card .card-body {
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background color for text */
+            color: white; /* White text color */
+            height: 100%; /* Set card body height to 100% */
         }
     </style>
 </head>
@@ -104,59 +105,45 @@
     <!-- Content Section -->
     <div class="container mt-5"> <!-- Bootstrap container -->
        <!-- Home Section -->
-       <div class="card mb-4"> <!-- Bootstrap card with shadow -->
-           <div class="card-body"> <!-- Card content -->
-               <h2 id="home" class="card-title text-primary">Welcome to RailMitra</h2> <!-- Section title -->
-               <div class="image-placeholder">
-                   <img src="https://via.placeholder.com/200" alt="Image Placeholder" style="max-width: 100%; height: auto;" /> <!-- Placeholder image -->
-               </div> <!-- Placeholder for images -->
-               <p class="mt-4">RailMitra is your ultimate companion for planning train journeys across India. With real-time updates, seamless booking options, and detailed train information, we're here to ensure your travels are smooth and stress-free.</p> <!-- Descriptive text -->
-           </div>
-       </div>
+<div class="card mb-4" style="background-image: url('https://wallpapercave.com/wp/wp6806017.jpg');">
+    <div class="card-body">
+        <h2 id="home" class="card-title text-primary">Welcome to RailMitra</h2>
+        <p class="mt-4">RailMitra is your ultimate companion for planning train journeys across India. With real-time updates, seamless booking options, and detailed train information, we're here to ensure your travels are smooth and stress-free.</p>
+    </div>
+</div>
 
-       <!-- Train Schedules Section -->
-       <a href="train-schedules.html" class="card mb-4"> <!-- Link to Train Schedules page -->
-           <div class="card-body"> <!-- Card content -->
-               <h2 id="schedules" class="card-title text-primary">Train Schedules</h2> <!-- Section heading -->
-               <div class="image-placeholder">
-                   <img src="https://via.placeholder.com/200" alt="Image Placeholder" style="max-width: 100%; height: auto;" /> <!-- Placeholder image -->
-               </div> <!-- Placeholder -->
-               <p class="mt-4">Explore the latest train schedules to find the best options for your journey. With a variety of express, superfast, and local trains, RailMitra helps you find the perfect match for your travel needs.</p> <!-- Descriptive text -->
-           </div>
-       </a>
+<!-- Train Schedules Section -->
+<a href="train-schedules.html" class="card mb-4" style="background-image: url('https://img.freepik.com/premium-photo/calendar-page-close-up-blue-background-business-planning-appointment-meeting-concept_293060-458.jpg');">
+    <div class="card-body">
+        <h2 id="schedules" class="card-title text-primary">Train Schedules</h2>
+        <p class="mt-4">Explore the latest train schedules to find the best options for your journey. With a variety of express, superfast, and local trains, RailMitra helps you find the perfect match for your travel needs.</p>
+    </div>
+</a>
 
-       <!-- E-Wallet Section -->
-       <a href="ewallet.html" class="card mb-4"> <!-- Link to E-Wallet page -->
-           <div class="card-body"> <!-- Card content -->
-               <h2 id="ewallet" class="card-title text-primary">E-Wallet</h2> <!-- Section heading -->
-               <div class="image-placeholder">
-                   <img src="https://via.placeholder.com/200" alt="Image Placeholder" style="max-width: 100%; height: auto;" /> <!-- Placeholder image -->
-               </div>
-               <p class="mt-4">Use our secure e-wallet to manage your payments, add funds, and make transactions with ease during your train journeys.</p> <!-- Descriptive text -->
-           </div>
-       </a>
+<!-- E-Wallet Section -->
+<a href="ewallet.html" class="card mb-4" style="background-image: url('https://ncube-digest.com/wp-content/uploads/2022/10/e-wallet-development.jpg');">
+    <div class="card-body">
+        <h2 id="ewallet" class="card-title text-primary">E-Wallet</h2>
+        <p class="mt-4">Use our secure e-wallet to manage your payments, add funds, and make transactions with ease during your train journeys.</p>
+    </div>
+</a>
 
-       <!-- Reservation Section -->
-       <a href="reservation.html" class="card mb-4"> <!-- Link to Reservations page -->
-           <div class="card-body"> <!-- Card content -->
-               <h2 class="card-title text-primary">Reservations</h2> <!-- Section heading -->
-               <div class="image-placeholder">
-                   <img src="https://via.placeholder.com/200" alt="Image Placeholder" style="max-width: 100%; height: auto;" /> <!-- Placeholder image -->
-               </div>
-               <p class="mt-4">Book your train reservations with RailMitra. Find the best seats, check availability, and manage your reservations easily.</p> <!-- Descriptive text -->
-           </div>
-       </a>
+<!-- Reservation Section -->
+<a href="reservation.html" class="card mb-4" style="background-image: url('https://gumlet.assettype.com/newslaundry/2020-01/91124bfe-7ec4-4929-948f-3533eca6e9a3/Indian_Railway__Article_Image_01.jpg?w=1200&auto=format%2Ccompress&ogImage=true');">
+    <div class="card-body">
+        <h2 class="card-title text-primary">Reservations</h2>
+        <p class="mt-4">Book your train reservations with RailMitra. Find the best seats, check availability, and manage your reservations easily.</p>
+    </div>
+</a>
 
-       <!-- Community Chat Section -->
-       <a href="community-chat.html" class="card"> <!-- Link to Community Chat page -->
-           <div class="card-body"> <!-- Card content -->
-               <h2 class="card-title text-primary">Community Chat</h2> <!-- Section heading -->
-               <div class="image-placeholder">
-                   <img src="https://via.placeholder.com/200" alt="Image Placeholder" style="max-width: 100%; height: auto;" /> <!-- Placeholder image -->
-               </div>
-               <p class="mt-4">Join our community chat to connect with other travelers. Share your experiences, get tips, and stay updated with the latest travel information.</p> <!-- Descriptive text -->
-           </div>
-       </a>
+<!-- Community Chat Section -->
+<a href="community-chat.html" class="card" style="background-image: url('https://st4.depositphotos.com/18597208/40784/i/450/depositphotos_407845208-stock-photo-rendering-chat-application-pink-background.jpg');">
+    <div class="card-body">
+        <h2 class="card-title text-primary">Community Chat</h2>
+        <p class="mt-4">Join our community chat to connect with other travelers. Share your experiences, get tips, and stay updated with the latest travel information.</p>
+    </div>
+</a>
+
     </div>
 
     <!-- Footer -->
