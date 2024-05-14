@@ -10,34 +10,38 @@
     <!-- FontAwesome for Social Media Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- Custom Styles -->
+    
     <style>
-        /* Background image with gradient overlay for blending effect */
-        .bg-image {
-            background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.5)), 
-                              url('https://www.wallpapertip.com/wmimgs/155-1554570_indian-train-images-hd.jpg');
-            height: 500px; /* Background height */
-            background-size: cover; /* Fit the screen */
-            background-position: center; /* Center the image */
-            background-blend-mode: overlay; /* Blend mode for smooth transition */
-        }
-
-        /* Backdrop effect for the card */
-        .card-backdrop {
-            margin-top: -100px; /* Offset to overlap the background image */
-            backdrop-filter: blur(30px); /* Blur effect */
-            background: rgba(255, 255, 255, 0.85); /* Semi-transparent background */
-            border-radius: 15px; /* Rounded corners */
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Shadow for depth */
-            padding-top: 20px; /* Additional padding for smooth start */
-            padding-bottom: 20px; /* Additional padding for smooth end */
-        }
-
         /* Font and text size adjustments */
         body {
             font-family: 'Roboto', sans-serif; /* Modern font */
             font-size: 1rem; /* Base font size */
+            color: #333333; /* Text color */
+            background-image: url('https://www.wallpapertip.com/wmimgs/155-1554570_indian-train-images-hd.jpg'); /* Background image */
+            background-size: cover; /* Cover the entire background */
+            background-position: center; /* Center the background image */
+            padding: 20px; /* Padding for body content */
         }
-
+    
+        /* Center the card */
+        .card-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 70vh;
+        }
+    
+        /* Backdrop effect for the card */
+        .card-backdrop {
+            border-radius: 15px; /* Rounded corners */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+            padding-top: 20px; /* Additional padding for smooth start */
+            padding-bottom: 20px; /* Additional padding for smooth end */
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            max-width: 450px; /* Decrease width */
+            width: 100%; /* Full width */
+        }
+    
         /* Custom styles for form controls */
         .form-control {
             border: 2px solid #378CE7; /* Blue border */
@@ -46,25 +50,26 @@
             font-size: 1.2rem; /* Larger font size */
             transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transitions */
         }
-
+    
         .form-control:focus {
             border-color: #5356FF; /* Focus border color */
             box-shadow: 0 0 15px rgba(83, 86, 255, 0.5); /* Glow effect */
         }
-
+    
         /* Button styles */
         .btn-primary {
             background-color: #5356FF; /* Deep blue */
             transition: background-color 0.3s, transform 0.2s; /* Smooth transition */
             font-size: 1.2rem; /* Larger font size */
             padding: 10px 20px; /* Larger padding */
+            border-radius: 10px; /* Rounded corners */
         }
-
+    
         .btn-primary:hover {
             background-color: #378CE7; /* Lighter blue on hover */
             transform: scale(1.05); /* Slight enlargement on hover */
         }
-
+    
         /* Eye icon styles for show/hide password */
         .show-hide-icon {
             position: absolute; /* Position relative to the input field */
@@ -73,45 +78,47 @@
             transform: translateY(-50%); /* Align vertically */
             cursor: pointer; /* Cursor changes on hover */
         }
+      
+    /* Add this CSS to create a black circle around buttons on hover */
+    .btn-floating:hover {
+        box-shadow: 0 0 0 3px hsl(247, 87%, 46%); /* Add a black circle */
+    }
 
-        /* Center content vertically */
-        .vertical-center {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh; /* Full viewport height */
-        }
-        .blur-bg {
-            backdrop-filter: blur(10px); /* Blur effect */
-        }
-        
+
     </style>
+    
+
 </head>
 <body>
     <!-- Section: Sign-Up -->
     <section class="text-center my-5"> <!-- Add top and bottom margin -->
         <!-- Background Image with Gradient Overlay -->
         <div class="p-5 bg-image"></div> <!-- Custom class for background image -->
-
+     <div class="card-container">
         <!-- Sign-Up Card -->
         <div class="card mx-4 mx-md-5 card-backdrop"> <!-- Card with blur effect -->
             <div class="card-body py-5 px-md-5"> <!-- Padding for card content -->
                 <div class="row d-flex justify-content-center"> <!-- Centered content -->
                     <div class="col-lg-8"> <!-- Responsive width -->
-                        <h2 class="fw-bold mb-5">Sign Up Now</h2> <!-- Section heading -->
+                        <div class="d-flex align-items-center mb-3 pb-1"> <!-- Logo and title -->
+                            <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i> <!-- Icon -->
+                            <span class="h1 fw-bold mb-0">RailMitra</span> <!-- Logo text -->
+                          </div>
+                        <h2 class="fw-bold mb-5">Create account now! </h2> <!-- Section heading -->
                         <form id="signupForm"> <!-- Sign-Up form -->
                             <!-- Name Fields -->
                             <div class="row">
-                                <div class="col-md-6 mb-4"> <!-- First name -->
+                                <div class="col-md-12 mb-4"> <!-- First name -->
                                     <div class="form-outline">
                                         <input type="text" id="firstName" class="form-control" placeholder="First name" required>
                                     </div>
                                 </div>
-                                <div class="col-md-6 mb-4"> <!-- Last name -->
+                                <!--  <div class="col-md-6 mb-4"> 
                                     <div class="form-outline">
                                         <input type="text" id="lastName" class="form-control" placeholder="Last name" required>
                                     </div>
                                 </div>
+                                  -->
                             </div>
 
                             <!-- Email Input -->
@@ -147,15 +154,18 @@
 
                             <!-- Go back to Login Page -->
                             <div class="text-center mt-4"> <!-- Centered content -->
-                                <p>Already have an account? 
-                                  <a href="login.html" class="text-primary">Login here</a> <!-- Login link -->
+                                <p style="font-weight: bold; font-size: 1.1rem;"> <!-- Bold and larger font size -->
+                                    Already have an account? 
+                                    <a href="login.html" class="text-primary">Login here</a> <!-- Login link -->
                                 </p>
                             </div>
+                            
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+      </div>
     </section>
     <!-- Section: Sign-Up -->
 
