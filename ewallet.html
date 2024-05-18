@@ -108,6 +108,15 @@
         .logout-btn:hover {
             background-color: var(--secondary-color); /* Change color on hover */
         }
+
+        .modal-dialog-slide-up {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: 0;
+            max-width: none;
+        }
     </style>
 </head>
 <body>
@@ -142,10 +151,45 @@
 
                     <!-- E-Wallet Options -->
                     <div class="mt-4 text-center">
-                        <button class="btn btn-custom mx-2" id="addAccountBtn">Add Account</button>
+                        <button class="btn btn-custom mx-2" id="showAddAccountModalBtn">Add Account</button>
                         <button class="btn btn-custom mx-2" id="addFundsBtn">Add Funds</button>
                         <button class="btn btn-custom mx-2" id="removeFundsBtn">Remove Funds</button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for Adding Account -->
+    <div class="modal fade" id="addAccountModal" tabindex="-1" role="dialog" aria-labelledby="addAccountModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-slide-up" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addAccountModalLabel">Add Account</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addAccountForm">
+                        <div class="form-group">
+                            <label for="cardNumber">Card Number</label>
+                            <input type="text" class="form-control" id="cardNumber" placeholder="Enter card number" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardHolder">Card Holder</label>
+                            <input type="text" class="form-control" id="cardHolder" placeholder="Enter card holder name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="expiryDate">Expiry Date</label>
+                            <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cvv">CVV</label>
+                            <input type="text" class="form-control" id="cvv" placeholder="Enter CVV" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Add Account</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -232,17 +276,6 @@
         }
 
         // Event listeners for buttons
-        document.getElementById('addAccountBtn').addEventListener('click', function() {
-            // Add account logic
-            var userId = firebase.auth().currentUser.uid;
-            db.collection('users').doc(userId).set({
-                balance: 0
-            }).then(() => {
-                alert('Account created successfully');
-                loadUserData(userId);
-            });
-        });
-
         document.getElementById('addFundsBtn').addEventListener('click', function() {
             // Add funds logic
             var amount = prompt('Enter amount to add:');
@@ -294,6 +327,35 @@
             }).catch((error) => {
                 console.error('Error logging out:', error);
             });
+        });
+
+        // Add account modal event listener
+        document.getElementById('showAddAccountModalBtn').addEventListener('click', function() {
+            $('addAccountModal').modal('show');
+        });
+
+        // Form submission for adding account
+        document.getElementById('addAccountForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const user = firebase.auth().currentUser;
+            if (user) {
+                const cardNumber = document.getElementById('cardNumber').value;
+                const cardHolder = document.getElementById('cardHolder').value;
+                const expiryDate = document.getElementById('expiryDate').value;
+                const cvv = document.getElementById('cvv').value;
+
+                firebase.firestore().collection('users').doc(user.uid).collection('cards').add({
+                    cardNumber: cardNumber,
+                    cardHolder: cardHolder,
+                    expiryDate: expiryDate,
+                    cvv: cvv
+                }).then(() => {
+                    alert('Card added successfully');
+                    $('#addAccountModal').modal('hide');
+                }).catch(error => {
+                    console.error("Error adding card: ", error);
+                });
+            }
         });
     </script>
 </body>
