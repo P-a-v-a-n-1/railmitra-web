@@ -4,31 +4,21 @@
     <meta charset="UTF-8">
     <title>E-Wallet</title>
     <!-- Bootstrap CSS -->
-    <link
-        rel="stylesheet"
-        href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
     <!-- Google Fonts for Custom Font -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap"
-        rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet"/>
     <!-- Font Awesome for Icons -->
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
     <!-- Custom CSS for Styling and Gradient Background -->
     <style>
         body {
-        /* Color Palette Variables */
-        --primary-color: #5356FF; /* Dark Blue */
-        --secondary-color: #378CE7; /* Medium Blue */
-        --tertiary-color: #67C6E3; /* Light Blue */
-        --background-color: #DFF5FF; /* Very Light Blue */
+            /* Color Palette Variables */
+            --primary-color: #5356FF; /* Dark Blue */
+            --secondary-color: #378CE7; /* Medium Blue */
+            --tertiary-color: #67C6E3; /* Light Blue */
+            --background-color: #DFF5FF; /* Very Light Blue */
 
-        /* Gradient Background */
-
+            /* Gradient Background */
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); /* Gradient background */
             font-family: 'Poppins', sans-serif; /* Custom font */
             min-height: 100vh; /* Ensure full screen coverage */
@@ -107,7 +97,7 @@
                 <!-- Wallet Card -->
                 <div class="wallet-card">
                     <!-- Balance Information -->
-                    <div class="balance">Current Balance: ₹10,000</div>
+                    <div class="balance">Current Balance: ₹<span id="currentBalance">0</span></div>
 
                     <!-- Transaction Table -->
                     <table class="transaction-table">
@@ -119,33 +109,16 @@
                                 <th>Type</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>25-Apr-2024</td>
-                                <td>Online Shopping</td>
-                                <td>₹2,000</td>
-                                <td>Debit</td>
-                            </tr>
-                            <tr>
-                                <td>24-Apr-2024</td>
-                                <td>Salary Credit</td>
-                                <td>₹15,000</td>
-                                <td>Credit</td>
-                            </tr>
-                            <tr>
-                                <td>23-Apr-2024</td>
-                                <td>Utility Bill</td>
-                                <td>₹500</td>
-                                <td>Debit</td>
-                            </tr>
+                        <tbody id="transactionTableBody">
+                            <!-- Transactions will be populated here -->
                         </tbody>
                     </table>
 
                     <!-- E-Wallet Options -->
                     <div class="mt-4 text-center">
-                        <button class="btn btn-custom mx-2">Add Funds</button>
-                        <button class="btn btn-custom mx-2">Withdraw Funds</button>
-                        <button class="btn btn-custom mx-2">View Statements</button>
+                        <button class="btn btn-custom mx-2" id="addAccountBtn">Add Account</button>
+                        <button class="btn btn-custom mx-2" id="addFundsBtn">Add Funds</button>
+                        <button class="btn btn-custom mx-2" id="removeFundsBtn">Remove Funds</button>
                     </div>
                 </div>
             </div>
@@ -153,15 +126,134 @@
     </div>
 
     <!-- Bootstrap JS and Dependencies -->
-    <script
-        src="https://code.jquery.com/jquery-3.5.1.min.js"
-        integrity="sha384-ZvpUoO/+P6rXIQk5kHkPo3L6KoPTVZ8jIzsQWZpTQ8TXYhN6vjyxDfImLzMHO8js"
-        crossorigin="anonymous"
-    ></script>
-    <script
-        src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"
-        integrity="sha384-r3PzYY2t6WobX5EJ4/8rA7epFZw4yPUFBLl5C3gX3fb0F2yRRDmbPCmIGc7mleP4"
-        crossorigin="anonymous"
-    ></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha384-ZvpUoO/+P6rXIQk5kHkPo3L6KoPTVZ8jIzsQWZpTQ8TXYhN6vjyxDfImLzMHO8js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-r3PzYY2t6WobX5EJ4/8rA7epFZw4yPUFBLl5C3gX3fb0F2yRRDmbPCmIGc7mleP4" crossorigin="anonymous"></script>
+    <!-- Firebase JS SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script>
+        var firebaseConfig = {
+            apiKey: "AIzaSyCzF2lQO3f2O7BxCMStuwTZXiP5GCccH48",
+            authDomain: "railmitra-29557.firebaseapp.com",
+            projectId: "railmitra-29557",
+            storageBucket: "railmitra-29557.appspot.com",
+            messagingSenderId: "269756755900",
+            appId: "1:269756755900:web:69d475147946f789fdc5b9",
+            measurementId: "G-T0MQQ6JMLD"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.firestore();
+
+        // Check authentication state
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                console.log("User is logged in:", user.email);
+                loadUserData(user.uid);
+            } else {
+                console.log("User is logged out.");
+                showLoginMessage();
+            }
+        });
+
+        // Function to show login message and link
+        function showLoginMessage() {
+            var walletCard = document.querySelector('.wallet-card');
+            walletCard.innerHTML = `
+                <div class="alert alert-danger" role="alert">
+                    You are not logged in. Please <a href="login.html">login</a> to access your E-Wallet.
+                </div>
+            `;
+        }
+
+        // Function to load user data
+        function loadUserData(userId) {
+            db.collection('users').doc(userId).get().then(doc => {
+                if (doc.exists) {
+                    var data = doc.data();
+                    document.getElementById('currentBalance').innerText = data.balance;
+                    loadTransactions(userId);
+                } else {
+                    // No account, create a new one
+                    db.collection('users').doc(userId).set({
+                        balance: 0
+                    });
+                }
+            });
+        }
+
+        // Function to load transactions
+        function loadTransactions(userId) {
+            db.collection('users').doc(userId).collection('transactions').orderBy('date', 'desc').get().then(querySnapshot => {
+                var tableBody = document.getElementById('transactionTableBody');
+                tableBody.innerHTML = ''; // Clear existing rows
+                querySnapshot.forEach(doc => {
+                    var transaction = doc.data();
+                    var row = `<tr>
+                                <td>${transaction.date.toDate().toLocaleDateString()}</td>
+                                <td>${transaction.description}</td>
+                                <td>₹${transaction.amount}</td>
+                                <td>${transaction.type}</td>
+                               </tr>`;
+                    tableBody.innerHTML += row;
+                });
+            });
+        }
+
+        // Event listeners for buttons
+        document.getElementById('addAccountBtn').addEventListener('click', function() {
+            // Add account logic
+            var userId = firebase.auth().currentUser.uid;
+            db.collection('users').doc(userId).set({
+                balance: 0
+            }).then(() => {
+                alert('Account created successfully');
+                loadUserData(userId);
+            });
+        });
+
+        document.getElementById('addFundsBtn').addEventListener('click', function() {
+            // Add funds logic
+            var amount = prompt('Enter amount to add:');
+            if (amount && !isNaN(amount)) {
+                var userId = firebase.auth().currentUser.uid;
+                updateBalance(userId, parseFloat(amount), 'Credit');
+            }
+        });
+
+        document.getElementById('removeFundsBtn').addEventListener('click', function() {
+            // Remove funds logic
+            var amount = prompt('Enter amount to remove:');
+            if (amount && !isNaN(amount)) {
+                var userId = firebase.auth().currentUser.uid;
+                updateBalance(userId, -parseFloat(amount), 'Debit');
+            }
+        });
+
+        // Function to update balance and record transaction
+        function updateBalance(userId, amount, type) {
+            var userRef = db.collection('users').doc(userId);
+            userRef.get().then(doc => {
+                if (doc.exists) {
+                    var newBalance = doc.data().balance + amount;
+                    userRef.update({
+                        balance: newBalance
+                    }).then(() => {
+                        // Record the transaction
+                        userRef.collection('transactions').add({
+                            date: firebase.firestore.Timestamp.now(),
+                            description: type === 'Credit' ? 'Added Funds' : 'Removed Funds',
+                            amount: Math.abs(amount),
+                            type: type
+                        }).then(() => {
+                            loadUserData(userId);
+                        });
+                    });
+                }
+            });
+        }
+    </script>
 </body>
 </html>
