@@ -12,101 +12,95 @@
     <!-- Custom CSS for Styling and Gradient Background -->
     <style>
         body {
-            /* Color Palette Variables */
-            --primary-color: #5356FF; /* Dark Blue */
-            --secondary-color: #378CE7; /* Medium Blue */
-            --tertiary-color: #67C6E3; /* Light Blue */
-            --background-color: #DFF5FF; /* Very Light Blue */
+            --primary-color: #5356FF; 
+            --secondary-color: #378CE7;
+            --tertiary-color: #67C6E3;
+            --background-color: #DFF5FF;
 
-            /* Gradient Background */
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); /* Gradient background */
-            font-family: 'Poppins', sans-serif; /* Custom font */
-            min-height: 100vh; /* Ensure full screen coverage */
-            padding: 20px; /* Padding around the content */
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); 
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh; 
+            padding: 20px;
         }
 
-        /* Card Styling */
         .wallet-card {
-            background-color: white; /* Card background */
-            border-radius: 10px; /* Rounded corners */
-            padding: 20px; /* Padding inside the card */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Shadow effect */
-            transition: transform 0.3s, box-shadow 0.3s; /* Smooth animations */
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
         .wallet-card:hover {
-            transform: translateY(-5px); /* Hover effect */
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3); /* Increased shadow */
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
         }
 
-        /* Balance Information */
         .balance {
-            text-align: center; /* Centered text */
-            font-size: 2rem; /* Larger font size for balance */
-            color: var(--primary-color); /* Dark blue text */
-            margin-bottom: 20px; /* Margin at the bottom */
+            text-align: center;
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
         }
 
-        /* Transaction Table Styling */
         .transaction-table {
-            width: 100%; /* Full width */
-            border-collapse: collapse; /* Remove border spacing */
+            width: 100%;
+            border-collapse: collapse;
         }
 
         .transaction-table th, .transaction-table td {
-            padding: 10px; /* Padding for cells */
-            text-align: left; /* Left-aligned text */
+            padding: 10px;
+            text-align: left;
         }
 
         .transaction-table th {
-            background-color: var(--secondary-color); /* Blue background for headers */
-            color: white; /* White text for headers */
+            background-color: var(--secondary-color);
+            color: white;
         }
 
         .transaction-table td {
-            border-bottom: 1px solid #ccc; /* Border between rows */
+            border-bottom: 1px solid #ccc;
         }
 
-        /* Button Styling */
         .btn-custom {
-            background-color: var(--primary-color); /* Dark blue */
-            color: white; /* White text */
-            transition: background-color 0.3s; /* Smooth hover transition */
+            background-color: var(--primary-color);
+            color: white;
+            transition: background-color 0.3s;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .btn-custom i {
+            margin-right: 8px;
         }
 
         .btn-custom:hover {
-            background-color: var(--secondary-color); /* Change color on hover */
+            background-color: var(--secondary-color);
         }
 
-        /* Icon Button Styling */
-        .btn-icon {
-            background-color: transparent; /* Transparent background */
-            color: var(--primary-color); /* Blue icons */
-            transition: color 0.3s; /* Smooth transition for icons */
-        }
-
-        .btn-icon:hover {
-            color: var(--secondary-color); /* Change color on hover */
-        }
-
-        /* User Info Styling */
         .user-info {
-            text-align: right; /* Right-aligned text */
-            color: white; /* White text */
-            margin-bottom: 20px; /* Margin at the bottom */
+            text-align: right;
+            color: white;
+            margin-bottom: 20px;
         }
 
         .logout-btn {
-            background-color: var(--primary-color); /* Dark blue */
-            color: white; /* White text */
-            border: none; /* Remove border */
-            padding: 5px 10px; /* Padding */
-            border-radius: 5px; /* Rounded corners */
-            cursor: pointer; /* Pointer cursor */
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
         .logout-btn:hover {
-            background-color: var(--secondary-color); /* Change color on hover */
+            background-color: var(--secondary-color);
         }
 
         .modal-dialog-slide-up {
@@ -142,6 +136,7 @@
                                 <th>Description</th>
                                 <th>Amount</th>
                                 <th>Type</th>
+                                <th>Card Number</th>
                             </tr>
                         </thead>
                         <tbody id="transactionTableBody">
@@ -151,27 +146,44 @@
 
                     <!-- E-Wallet Options -->
                     <div class="mt-4 text-center">
-                        <button class="btn btn-custom mx-2" id="showAddAccountModalBtn">Add Account</button>
-                        <button class="btn btn-custom mx-2" id="addFundsBtn">Add Funds</button>
-                        <button class="btn btn-custom mx-2" id="removeFundsBtn">Remove Funds</button>
+                        <button class="btn btn-custom mx-2" id="addFundsBtn">
+                            <i class="fas fa-plus-circle"></i> Add Funds
+                        </button>
+                        <button class="btn btn-custom mx-2" id="removeFundsBtn">
+                            <i class="fas fa-minus-circle"></i> Remove Funds
+                        </button>
+                        <button class="btn btn-custom mx-2" id="showAddCardModalBtn">
+                            <i class="fas fa-credit-card"></i> Add Card
+                        </button>
+                        <button class="btn btn-custom mx-2" id="paymentBtn">
+                            <i class="fas fa-wallet"></i> Make Payment
+                        </button>
+                    </div>
+
+                    <!-- Card Selection -->
+                    <div class="mt-4 text-center">
+                        <label for="cardSelect">Select Card:</label>
+                        <select id="cardSelect" class="form-control d-inline-block w-auto">
+                            <!-- Options will be populated here -->
+                        </select>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Modal for Adding Account -->
-    <div class="modal fade" id="addAccountModal" tabindex="-1" role="dialog" aria-labelledby="addAccountModalLabel" aria-hidden="true">
+    <!-- Modal for Adding Card -->
+    <div class="modal fade" id="addCardModal" tabindex="-1" role="dialog" aria-labelledby="addCardModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-slide-up" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addAccountModalLabel">Add Account</h5>
+                    <h5 class="modal-title" id="addCardModalLabel">Add Card</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="addAccountForm">
+                    <form id="addCardForm">
                         <div class="form-group">
                             <label for="cardNumber">Card Number</label>
                             <input type="text" class="form-control" id="cardNumber" placeholder="Enter card number" required>
@@ -188,7 +200,7 @@
                             <label for="cvv">CVV</label>
                             <input type="text" class="form-control" id="cvv" placeholder="Enter CVV" required>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block">Add Account</button>
+                        <button type="submit" class="btn btn-primary btn-block">Add Card</button>
                     </form>
                 </div>
             </div>
@@ -203,7 +215,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script>
-        var firebaseConfig = {
+       var firebaseConfig = {
             apiKey: "AIzaSyCzF2lQO3f2O7BxCMStuwTZXiP5GCccH48",
             authDomain: "railmitra-29557.firebaseapp.com",
             projectId: "railmitra-29557",
@@ -217,7 +229,6 @@
         firebase.initializeApp(firebaseConfig);
         var db = firebase.firestore();
 
-        // Check authentication state
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
                 console.log("User is logged in:", user.email);
@@ -226,12 +237,10 @@
             } else {
                 console.log("User is logged out.");
                 showLoginMessage();
-                // Redirect to login.html when user is logged out
                 window.location.href = "login.html";
             }
         });
 
-        // Function to show login message and link
         function showLoginMessage() {
             var walletCard = document.querySelector('.wallet-card');
             walletCard.innerHTML = `
@@ -241,15 +250,14 @@
             `;
         }
 
-        // Function to load user data
         function loadUserData(userId) {
             db.collection('users').doc(userId).get().then(doc => {
                 if (doc.exists) {
                     var data = doc.data();
                     document.getElementById('currentBalance').innerText = data.balance;
                     loadTransactions(userId);
+                    loadCards(userId);
                 } else {
-                    // No account, create a new one
                     db.collection('users').doc(userId).set({
                         balance: 0
                     });
@@ -257,11 +265,10 @@
             });
         }
 
-        // Function to load transactions
         function loadTransactions(userId) {
             db.collection('users').doc(userId).collection('transactions').orderBy('date', 'desc').get().then(querySnapshot => {
                 var tableBody = document.getElementById('transactionTableBody');
-                tableBody.innerHTML = ''; // Clear existing rows
+                tableBody.innerHTML = '';
                 querySnapshot.forEach(doc => {
                     var transaction = doc.data();
                     var row = `<tr>
@@ -269,33 +276,52 @@
                                 <td>${transaction.description}</td>
                                 <td>₹${transaction.amount}</td>
                                 <td>${transaction.type}</td>
+                                <td>${transaction.cardNumber}</td>
                                </tr>`;
                     tableBody.innerHTML += row;
                 });
             });
         }
 
-        // Event listeners for buttons
+        function loadCards(userId) {
+            db.collection('users').doc(userId).collection('cards').get().then(querySnapshot => {
+                var cardSelect = document.getElementById('cardSelect');
+                cardSelect.innerHTML = '<option value="">Select Card</option>';
+                querySnapshot.forEach(doc => {
+                    var card = doc.data();
+                    var option = `<option value="${doc.id}">${card.cardNumber} - ${card.cardHolder}</option>`;
+                    cardSelect.innerHTML += option;
+                });
+            });
+        }
+
         document.getElementById('addFundsBtn').addEventListener('click', function() {
-            // Add funds logic
-            var amount = prompt('Enter amount to add:');
-            if (amount && !isNaN(amount)) {
-                var userId = firebase.auth().currentUser.uid;
-                updateBalance(userId, parseFloat(amount), 'Credit');
+            var selectedCard = document.getElementById('cardSelect').value;
+            if (selectedCard) {
+                var amount = prompt('Enter amount to add:');
+                if (amount && !isNaN(amount)) {
+                    var userId = firebase.auth().currentUser.uid;
+                    updateBalance(userId, parseFloat(amount), 'Credit', selectedCard);
+                }
+            } else {
+                alert('Please select a card.');
             }
         });
 
         document.getElementById('removeFundsBtn').addEventListener('click', function() {
-            // Remove funds logic
-            var amount = prompt('Enter amount to remove:');
-            if (amount && !isNaN(amount)) {
-                var userId = firebase.auth().currentUser.uid;
-                updateBalance(userId, -parseFloat(amount), 'Debit');
+            var selectedCard = document.getElementById('cardSelect').value;
+            if (selectedCard) {
+                var amount = prompt('Enter amount to remove:');
+                if (amount && !isNaN(amount)) {
+                    var userId = firebase.auth().currentUser.uid;
+                    updateBalance(userId, -parseFloat(amount), 'Debit', selectedCard);
+                }
+            } else {
+                alert('Please select a card.');
             }
         });
 
-        // Function to update balance and record transaction
-        function updateBalance(userId, amount, type) {
+        function updateBalance(userId, amount, type, cardId) {
             var userRef = db.collection('users').doc(userId);
             userRef.get().then(doc => {
                 if (doc.exists) {
@@ -303,39 +329,100 @@
                     userRef.update({
                         balance: newBalance
                     }).then(() => {
-                        // Record the transaction
-                        userRef.collection('transactions').add({
-                            date: firebase.firestore.Timestamp.now(),
-                            description: type === 'Credit' ? 'Added Funds' : 'Removed Funds',
-                            amount: Math.abs(amount),
-                            type: type
-                        }).then(() => {
-                            loadUserData(userId);
+                        var cardRef = userRef.collection('cards').doc(cardId);
+                        cardRef.get().then(cardDoc => {
+                            if (cardDoc.exists) {
+                                var cardNumber = cardDoc.data().cardNumber;
+                                userRef.collection('transactions').add({
+                                    date: firebase.firestore.Timestamp.now(),
+                                    description: type === 'Credit' ? 'Added Funds' : 'Removed Funds',
+                                    amount: Math.abs(amount),
+                                    type: type,
+                                    cardNumber: cardNumber
+                                }).then(() => {
+                                    loadUserData(userId);
+                                });
+                            }
                         });
                     });
                 }
             });
         }
 
-        // Logout button event listener
+        document.getElementById('paymentBtn').addEventListener('click', function() {
+            var amount = prompt('Enter payment amount:');
+            if (amount && !isNaN(amount)) {
+                var userId = firebase.auth().currentUser.uid;
+                makePayment(userId, parseFloat(amount));
+            }
+        });
+
+        function makePayment(userId, amount) {
+    console.log("Attempting to make payment...");
+    var userRef = db.collection('users').doc(userId);
+    userRef.get().then(doc => {
+        if (doc.exists) {
+            var currentBalance = doc.data().balance;
+            if (currentBalance >= amount) {
+                var newBalance = currentBalance - amount;
+                userRef.update({
+                    balance: newBalance
+                }).then(() => {
+                    userRef.collection('transactions').add({
+                        date: firebase.firestore.Timestamp.now(),
+                        description: 'Payment',
+                        amount: amount,
+                        type: 'Debit',
+                        cardNumber: 'E-Wallet'
+                    }).then(() => {
+                        loadUserData(userId);
+                        // Display confirmation message
+                        console.log("Payment successful, displaying confirmation message...");
+                        showConfirmationMessage(amount);
+                    });
+                });
+            } else {
+                alert('Insufficient balance.');
+            }
+        }
+    }).catch(error => {
+        console.error("Error making payment:", error);
+    });
+}
+
+
+function showConfirmationMessage(amount) {
+    var confirmationDiv = document.createElement('div');
+    confirmationDiv.classList.add('alert', 'alert-success', 'text-center', 'mt-3');
+    confirmationDiv.innerHTML = `
+        <strong>Payment Successful!</strong> ₹${amount} has been debited from your account.
+    `;
+
+    var walletCard = document.querySelector('.wallet-card');
+    walletCard.appendChild(confirmationDiv);
+
+    // Automatically remove the message after 3 seconds
+    setTimeout(() => {
+        confirmationDiv.remove();
+    }, 3000);
+}
+
+
         document.getElementById('logoutBtn').addEventListener('click', function() {
             firebase.auth().signOut().then(() => {
                 console.log('User logged out.');
                 showLoginMessage();
-                // Redirect to login.html on logout
                 window.location.href = "login.html";
             }).catch((error) => {
                 console.error('Error logging out:', error);
             });
         });
 
-        // Add account modal event listener
-        document.getElementById('showAddAccountModalBtn').addEventListener('click', function() {
-            $('addAccountModal').modal('show');
+        document.getElementById('showAddCardModalBtn').addEventListener('click', function() {
+            $('#addCardModal').modal('show');
         });
 
-        // Form submission for adding account
-        document.getElementById('addAccountForm').addEventListener('submit', function(event) {
+        document.getElementById('addCardForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const user = firebase.auth().currentUser;
             if (user) {
@@ -351,7 +438,8 @@
                     cvv: cvv
                 }).then(() => {
                     alert('Card added successfully');
-                    $('#addAccountModal').modal('hide');
+                    $('#addCardModal').modal('hide');
+                    loadCards(user.uid);
                 }).catch(error => {
                     console.error("Error adding card: ", error);
                 });
