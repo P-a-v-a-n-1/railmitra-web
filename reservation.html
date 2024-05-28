@@ -101,7 +101,7 @@
         <h2 class="form-header">Railway Reservation Form</h2>
 
         <!-- Form Content -->
-        <form>
+        <form id="reservation-form">
             <!-- Passenger Information -->
             <div class="form-group">
                 <label for="passenger-name">Passenger Name</label>
@@ -115,7 +115,7 @@
 
             <!-- Journey Information -->
             <div class="form-group">
-                <label for "departure-station">Departure Station</label>
+                <label for="departure-station">Departure Station</label>
                 <input type="text" id="departure-station" class="form-control" placeholder="Enter departure station" required>
             </div>
 
@@ -125,8 +125,7 @@
             </div>
 
             <div class="form-group">
-                <label for "journey-date">Journey Date</label
-                >
+                <label for="journey-date">Journey Date</label>
                 <input type="date" id="journey-date" class="form-control" required>
             </div>
 
@@ -190,3 +189,88 @@
     integrity="sha384-r3PzYY2t6WobX5EJ4/8rA7epFZw4yPUFBLl5C3gX3fb0F2yRRDmbPCmIGc7mleP4"
     crossorigin="anonymous"
 ></script>
+
+<!-- Firebase App (the core Firebase SDK) -->
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+<!-- Firebase Auth SDK -->
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+<!-- Firebase Firestore SDK -->
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+
+<script>
+    // Your Firebase configuration
+    var firebaseConfig = {
+            apiKey: "AIzaSyCzF2lQO3f2O7BxCMStuwTZXiP5GCccH48",
+            authDomain: "railmitra-29557.firebaseapp.com",
+            projectId: "railmitra-29557",
+            storageBucket: "railmitra-29557.appspot.com",
+            messagingSenderId: "269756755900",
+            appId: "1:269756755900:web:69d475147946f789fdc5b9",
+            measurementId: "G-T0MQQ6JMLD"
+        };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    var db = firebase.firestore();
+
+    // Handle form submission
+    document.getElementById('reservation-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Get form data
+        var name = document.getElementById('passenger-name').value;
+        var age = document.getElementById('passenger-age').value;
+        var departure = document.getElementById('departure-station').value;
+        var arrival = document.getElementById('arrival-station').value;
+        var date = document.getElementById('journey-date').value;
+        var travelClass = document.getElementById('class-of-travel').value;
+        var berth = document.getElementById('berth-preference').value;
+        var paymentMethod = document.getElementById('payment-method').value;
+
+        // Check availability and book ticket
+        db.collection('trains').doc(departure + '-' + arrival + '-' + date).get().then(function(doc) {
+            if (doc.exists) {
+                var trainData = doc.data();
+                if (trainData.availableSeats > 0) {
+                    // Update available seats
+                    db.collection('trains').doc(departure + '-' + arrival + '-' + date).update({
+                        availableSeats: firebase.firestore.FieldValue.increment(-1)
+                    });
+
+                    // Add reservation to database
+                    db.collection('reservations').add({
+                        name: name,
+                        age: age,
+                        departure: departure,
+                        arrival: arrival,
+                        date: date,
+                        class: travelClass,
+                        berth: berth,
+                        paymentMethod: paymentMethod,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    }).then(function() {
+                        alert('Ticket booked successfully!');
+                    }).catch(function(error) {
+                        console.error('Error booking ticket: ', error);
+                    });
+                } else {
+                    alert('No available seats for this train.');
+                }
+            } else {
+                alert('No train found for the selected route and date.');
+            }
+        }).catch(function(error) {
+            console.error('Error checking availability: ', error);
+        });
+    });
+
+    // Redirect to payment page based on selected payment method
+    document.getElementById('payment-method').addEventListener('change', function() {
+        var paymentMethod = this.value;
+        if (paymentMethod) {
+            // Redirect to respective payment page
+            window.location.href = paymentMethod + '-payment.html';
+        }
+    });
+</script>
+</body>
+</html>
