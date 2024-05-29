@@ -159,8 +159,6 @@
                 <select id="payment-method" class="form-control" required>
                     <option value="">Select Payment Method</option>
                     <option value="credit-card">Credit/Debit Card</option>
-                    <option value="net-banking">Net Banking</option>
-                    <option value="upi">UPI</option>
                     <option value="wallet">e-Wallet</option>
                 </select>
             </div>
@@ -170,6 +168,26 @@
                 <button type="submit" class="btn btn-custom">Reserve Ticket</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Reservation Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="confirmationMessage">
+                <!-- Confirmation message will be inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -226,51 +244,81 @@
         var berth = document.getElementById('berth-preference').value;
         var paymentMethod = document.getElementById('payment-method').value;
 
-        // Check availability and book ticket
-        db.collection('trains').doc(departure + '-' + arrival + '-' + date).get().then(function(doc) {
-            if (doc.exists) {
-                var trainData = doc.data();
-                if (trainData.availableSeats > 0) {
-                    // Update available seats
-                    db.collection('trains').doc(departure + '-' + arrival + '-' + date).update({
-                        availableSeats: firebase.firestore.FieldValue.increment(-1)
-                    });
+        // Create a reference to the train document
+        var trainRef = db.collection('trains').doc(departure + '-' + arrival + '-' + date);
 
-                    // Add reservation to database
-                    db.collection('reservations').add({
-                        name: name,
-                        age: age,
-                        departure: departure,
-                        arrival: arrival,
-                        date: date,
-                        class: travelClass,
-                        berth: berth,
-                        paymentMethod: paymentMethod,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    }).then(function() {
-                        alert('Ticket booked successfully!');
-                    }).catch(function(error) {
-                        console.error('Error booking ticket: ', error);
-                    });
-                } else {
-                    alert('No available seats for this train.');
+        // Check train and seat availability
+        db.runTransaction(function(transaction) {
+            return transaction.get(trainRef).then(function(trainDoc) {
+                if (!trainDoc.exists) {
+                    throw 'Train not found for the selected route and date.';
                 }
-            } else {
-                alert('No train found for the selected route and date.');
-            }
+
+                var availableSeats = trainDoc.data().availableSeats;
+                if (availableSeats <= 0) {
+                    throw 'No available seats for this train.';
+                }
+
+                // Update available seats
+                transaction.update(trainRef, {
+                    availableSeats: firebase.firestore.FieldValue.increment(-1)
+                });
+
+                // Add reservation to database
+                var reservationRef = db.collection('reservations').doc();
+                transaction.set(reservationRef, {
+                    name: name,
+                    age: age,
+                    departure: departure,
+                    arrival: arrival,
+                    date: date,
+                    class: travelClass,
+                    berth: berth,
+                    paymentMethod: paymentMethod,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            });
+        }).then(function() {
+            // Show confirmation modal
+            var confirmationMessage = `
+                <p>Ticket booked successfully!</p>
+                <p><strong>Name:</strong> ${name}</p>
+                <p><strong>Departure:</strong> ${departure}</p>
+                <p><strong>Arrival:</strong> ${arrival}</p>
+                <p><strong>Date:</strong> ${date}</p>
+                <p><strong>Class:</strong> ${travelClass}</p>
+                <p><strong>Berth:</strong> ${berth}</p>
+                <p><strong>Payment Method:</strong> ${paymentMethod}</p>
+            `;
+            document.getElementById('confirmationMessage').innerHTML = confirmationMessage;
+            $('#confirmationModal').modal('show');
         }).catch(function(error) {
-            console.error('Error checking availability: ', error);
+            alert('Error: ' + error);
+            console.error('Transaction failed: ', error);
         });
     });
 
     // Redirect to payment page based on selected payment method
     document.getElementById('payment-method').addEventListener('change', function() {
-        var paymentMethod = this.value;
-        if (paymentMethod) {
-            // Redirect to respective payment page
-            window.location.href = paymentMethod + '-payment.html';
+        const selectedValue = this.value;
+        if (selectedValue === 'credit-card') {
+            window.location.href = 'creditcard.html';
+        } else if (selectedValue === 'wallet') {
+            window.location.href = 'ewallet.html';
         }
     });
+
+    // Redirect to payment page based on selected payment method
+   
+    document.getElementById('payment-method').addEventListener('change', function() {
+        const selectedValue = this.value;
+        if (selectedValue === 'credit-card') {
+            window.location.href = 'creditcard.html';
+        } else if (selectedValue === 'wallet') {
+            window.location.href = 'ewallet.html';
+        }
+    });
+
 </script>
 </body>
 </html>
