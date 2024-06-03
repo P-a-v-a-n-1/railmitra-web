@@ -47,7 +47,64 @@
         html {
             scroll-behavior: smooth;
         }
+       /* Base font size using viewport width */
+html {
+    font-size: calc(1vw + 1vh + 0.5vmin);
+}
 
+/* Adjustments for smaller screens */
+@media (max-width: 600px) {
+    html {
+        font-size: calc(1.5vw + 1vh + 0.5vmin);
+    }
+}
+
+/* Additional adjustments for larger screens if needed */
+@media (min-width: 601px) {
+    html {
+        font-size: calc(1.25vw + 1vh + 0.5vmin);
+    }
+}
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.card {
+    flex-basis: 100%; /* Take full width on small screens */
+    max-width: 100%; /* Ensure it doesn't exceed the container */
+    margin-bottom: 20px; /* Add some spacing between cards */
+}
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100%; /* Make sure it takes up the full height of the card */
+}
+@media (max-width: 529px) and (max-height: 667px) {
+    .card-body {
+         overflow: hidden; /* Prevents text from overflowing */
+     }
+ 
+    .card-body p,.card-body ul,.card-body ol {
+         display: none; /* Hides the rest of the text */
+     }
+ 
+    .card-body.main-heading {
+         display: block; /* Ensures the main heading is visible */
+     }
+ }
+ .card-body {
+    overflow-y: auto; /* Enables vertical scrolling */
+    max-height: 200px; /* Adjust based on your design needs */
+}
+.main-heading {
+    font-size: 2em; /* Adjust based on your design needs */
+    margin-bottom: 10px; /* Adds some space below the heading */
+}
+
+ 
         /* Card Styling */
         .card {
             transition: transform 0.3s, box-shadow 0.3s; /* Smooth animations */

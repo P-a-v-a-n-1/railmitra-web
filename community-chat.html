@@ -19,12 +19,14 @@
             <!-- Existing messages will be dynamically loaded here -->
         </div>
 
-        <!-- Input field for new messages -->
-        <div class="mt-4 d-flex"> <!-- Row for input and send button -->
-            <textarea class="chat-input" id="messageInput" placeholder="Write your message..." rows="1"></textarea> <!-- Input for message -->
-            <button class="send-button" id="sendButton">Send</button> <!-- Send button -->
-        </div>
-    </div>
+  <!-- Existing HTML remains unchanged -->
+
+<!-- Modify the input field and button wrapper for better mobile interaction -->
+<div class="input-wrapper mt-4 d-flex flex-column flex-sm-row"> <!-- Changed to flex-column for mobile -->
+    <textarea class="chat-input" id="messageInput" placeholder="Write your message..." rows="1"></textarea> <!-- Input for message -->
+    <button class="send-button" id="sendButton">Send</button> <!-- Send button -->
+</div>
+
 
     <!-- Firebase JS SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>

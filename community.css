@@ -4,6 +4,66 @@ body.gradient-custom {
     background-size: 400% 400%; /* Larger background size for smooth animation */
     animation: gradientAnimation 15s ease infinite; /* Smooth animation */
 }
+/* Existing CSS remains unchanged */
+
+/* Adjustments for Responsiveness */
+
+/* Ensure the chat card resizes nicely on mobile */
+.chat-card {
+    width: 100%;
+    max-width: 500px; /* Adjust based on your preference */
+    margin: 0 auto; /* Center the chat card on small screens */
+}
+
+/* Adjust the input field and button for smaller screens */
+@media (max-width: 600px) {
+    html {
+        font-size: calc(1.5vw + 1vh + 0.5vmin);
+    }
+}
+
+@media (min-width: 601px) {
+    html {
+        font-size: calc(1.25vw + 1vh + 0.5vmin);
+    }
+}
+.card-body {
+    transform: scale(1); /* Default scale */
+}
+.chat-card {
+    width: 100%;
+    max-width: calc(100vw - 40px);
+    margin: 0 auto;
+}
+
+.chat-input {
+    font-size: calc(1vw + 1vh + 0.5vmin);
+    width: 100%;
+    padding: 10px;
+}
+
+.send-button {
+    font-size: calc(1.5vw + 1vh + 0.5vmin);
+    padding: calc(1vw + 1vh + 0.5vmin);
+    transform: scale(calc(1.5vw + 1vh + 0.5vmin));
+    transition: transform 0.3s ease;
+}
+
+@media (max-width: 600px) {
+   .chat-card {
+        transform: scale(1.05);
+    }
+}
+
+@media (min-width: 601px) {
+   .chat-card {
+        transform: scale(1);
+    }
+}
+
+    
+
+/* Additional responsive adjustments as needed */
 
 @keyframes gradientAnimation {
     0% { background-position: 0% 50%; }
