@@ -286,248 +286,167 @@
 
 <!-- Firebase Configuration and Firestore -->
 <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-auth.js"></script> <!-- Add Firebase Auth -->
+<script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-firestore.js"></script>s
 <script>
-// Initialize Firebase
-var firebaseConfig = {
-apiKey: "AIzaSyCzF2lQO3f2O7BxCMStuwTZXiP5GCccH48",
-authDomain: "railmitra-29557.firebaseapp.com",
-projectId: "railmitra-29557",
-storageBucket: "railmitra-29557.appspot.com",
-messagingSenderId: "269756755900",
-appId: "1:269756755900:web:69d475147946f789fdc5b9",
-measurementId: "G-T0MQQ6JMLD"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-
-
-
-
-
-
-
-document.getElementById('train-number').addEventListener('input', updateTicketPrice);
-document.getElementById('departure-station').addEventListener('input', updateTicketPrice);
-document.getElementById('arrival-station').addEventListener('input', updateTicketPrice);
-document.getElementById('class-of-travel').addEventListener('change', updateTicketPrice);
-// Update the updateTicketPrice function
-function updateTicketPrice() {
-    const trainNumber = document.getElementById('train-number').value;
-    const departureStation = document.getElementById('departure-station').value;
-    const arrivalStation = document.getElementById('arrival-station').value;
-    const classOfTravel = document.getElementById('class-of-travel').value;
-
-    console.log(`Train Number: ${trainNumber}`);
-    console.log(`Departure Station: ${departureStation}`);
-    console.log(`Arrival Station: ${arrivalStation}`);
-    console.log(`Class of Travel: ${classOfTravel}`);
-
-    if (trainNumber && departureStation && arrivalStation && classOfTravel) {
-        // Query Firestore for the train and seats data
+    // Initialize Firebase
+    var firebaseConfig = {
+        apiKey: "AIzaSyCzF2lQO3f2O7BxCMStuwTZXiP5GCccH48",
+        authDomain: "railmitra-29557.firebaseapp.com",
+        projectId: "railmitra-29557",
+        storageBucket: "railmitra-29557.appspot.com",
+        messagingSenderId: "269756755900",
+        appId: "1:269756755900:web:69d475147946f789fdc5b9",
+        measurementId: "G-T0MQQ6JMLD"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    
+    document.getElementById('train-number').addEventListener('input', updateTicketPrice);
+    document.getElementById('departure-station').addEventListener('input', updateTicketPrice);
+    document.getElementById('arrival-station').addEventListener('input', updateTicketPrice);
+    document.getElementById('class-of-travel').addEventListener('change', updateTicketPrice);
+    
+    // Update the updateTicketPrice function
+    function updateTicketPrice() {
+        const trainNumber = document.getElementById('train-number').value;
+        const departureStation = document.getElementById('departure-station').value;
+        const arrivalStation = document.getElementById('arrival-station').value;
+        const classOfTravel = document.getElementById('class-of-travel').value;
+    
+        if (trainNumber && departureStation && arrivalStation && classOfTravel) {
+            db.collection('seats')
+                .where('train number', '==', trainNumber)
+                .where('station name', 'in', [departureStation, arrivalStation])
+                .orderBy('station name')
+                .get()
+                .then(querySnapshot => {
+                    if (querySnapshot.size < 2) {
+                        console.log('Not enough data for calculation.');
+                        return;
+                    }
+    
+                    let distances = [];
+                    querySnapshot.forEach(doc => {
+                        const seatsData = doc.data();
+                        distances.push(parseInt(seatsData.distance));
+                    });
+    
+                    const distance = Math.abs(distances[0] - distances[1]);
+                    const ticketPrice = calculateTicketPrice(distance, classOfTravel);
+    
+                    document.getElementById('ticket-price').innerText =` ₹ ${ticketPrice}.00`;
+                    document.getElementById('pricing-distance').innerText = `Distance: ${distance} km`;
+                    document.getElementById('pricing-class').innerText =` Class of Travel: ${classOfTravel}`;
+                })
+                .catch(error => {
+                    console.error("Error fetching seats data:", error);
+                    document.getElementById('ticket-price').innerText = 'Error';
+                });
+        } else {
+            console.log('One or more fields are empty.');
+        }
+    }
+    
+    function calculateTicketPrice(distance, classOfTravel) {
+        let baseFare = 0;
+        switch (classOfTravel) {
+            case "AC":
+                baseFare = 5;
+                break;
+            case "SL":
+                baseFare = 3;
+                break;
+            case "2S":
+                baseFare = 2;
+                break;
+        }
+        return baseFare * distance;
+    }
+    
+    function checkTrainAvailabilityAndReserve() {
+        const trainNumber = document.getElementById('train-number').value;
+        const departureStation = document.getElementById('departure-station').value;
+        const arrivalStation = document.getElementById('arrival-station').value;
+        const classOfTravel = document.getElementById('class-of-travel').value;
+        const passengerName = document.getElementById('passenger-name').value;
+        const passengerAge = document.getElementById('passenger-age').value;
+        const journeyDate = document.getElementById('journey-date').value;
+        const userId = firebase.auth().currentUser.uid; // Assuming the user is authenticated
+    
         db.collection('seats')
             .where('train number', '==', trainNumber)
-            .where('station name', 'in', [departureStation, arrivalStation]) // Modify the query to include both departure and arrival stations
-            .orderBy('station name') // Order the query results by station name
+            .where('station name', 'in', [departureStation, arrivalStation])
             .get()
             .then(querySnapshot => {
-                if (querySnapshot.size < 2) {
-                    console.log('Not enough data for calculation.');
+                if (querySnapshot.empty) {
+                    alert(`Train ${trainNumber} from ${departureStation} to ${arrivalStation} not found.`);
                     return;
                 }
-
+    
                 let distances = [];
                 querySnapshot.forEach(doc => {
                     const seatsData = doc.data();
                     distances.push(parseInt(seatsData.distance));
                 });
-
-                // Calculate the difference in distances
+    
                 const distance = Math.abs(distances[0] - distances[1]);
-
-                   const numPassengers = document.querySelectorAll('.passenger-info.form-group').length;
-                   console.log(`number of ${distance} km`);
-    const ticketPrice = calculateTicketPrice(distance, classOfTravel, numPassengers);
-                console.log(`Calculated Distance: ${distance} km`);
-                console.log(`Calculated Ticket Price: ₹ ${ticketPrice}.00`);
-
-                // Update UI elements
-                document.getElementById('ticket-price').innerText = `₹ ${ticketPrice}.00`;
-                document.getElementById('pricing-distance').innerText = `Distance: ${distance} km`;
-                document.getElementById('pricing-class').innerText = `Class of Travel: ${classOfTravel}`;
-            })
-            .catch(error => {
-                console.error("Error fetching seats data:", error);
-                document.getElementById('ticket-price').innerText = 'Error';
-            });
-    } else {
-        console.log('One or more fields are empty.');
-    }
-}
-
-    const trainNumber = document.getElementById('train-number').value;
-    const departureStation = document.getElementById('departure-station').value;
-    const arrivalStation = document.getElementById('arrival-station').value;
-    const classOfTravel = document.getElementById('class-of-travel').value;
-
-    console.log(`Train Number: ${trainNumber}`);
-    console.log(`Departure Station: ${departureStation}`);
-    console.log(`Arrival Station: ${arrivalStation}`);
-    console.log(`Class of Travel: ${classOfTravel}`);
-
-    if (trainNumber && departureStation && arrivalStation && classOfTravel) {
-        // Query Firestore for the train and seats data
-        db.collection('seats')
-            .where('train number', '==', trainNumber)
-            .where('station name', '==', departureStation)
-            .get()
-            .then(querySnapshot => {
-                if (querySnapshot.empty) {
-                    console.log('No matching documents.');
-                    document.getElementById('ticket-price').innerText = '₹ 0.00';
-                    document.getElementById('pricing-distance').innerText = 'Distance: 0 km';
-                    document.getElementById('pricing-class').innerText = `Class of Travel: ${classOfTravel}`;
-                    return;
-                }
-
-                querySnapshot.forEach(doc => {
-                    const seatsData = doc.data();
-                    console.log('Document data:', seatsData);
-
-                    const distance = parseInt(seatsData.distance);
-                    const ticketPrice = calculateTicketPrice(distance, classOfTravel);
-
-                    console.log(`Distance: ${distance} km`);
-                    console.log(`Calculated Ticket Price: ₹ ${ticketPrice}.00`);
-
-                    // Update UI elements
-                    document.getElementById('ticket-price').innerText = `₹ ${ticketPrice}.00`;
-                    document.getElementById('pricing-distance').innerText = `Distance: ${distance} km`;
-                    document.getElementById('pricing-class').innerText = `Class of Travel: ${classOfTravel}`;
-                });
-            })
-            .catch(error => {
-                console.error("Error fetching seats data:", error);
-                document.getElementById('ticket-price').innerText = 'Error';
-            });
-    } else {
-        console.log('One or more fields are empty.');
-    }
-
-
-
-// Function to calculate ticket price
-function calculateTicketPrice(distance, classOfTravel) {
-let baseFare = 0;
-switch (classOfTravel) {
-    case "AC":
-        baseFare = 5; // Adjust as per your pricing
-        break;
-    case "SL":
-        baseFare = 3; // Adjust as per your pricing
-        break;
-    case "2S":
-        baseFare = 2; // Adjust as per your pricing
-        break;
-}
-return baseFare * distance;
-}
-
-// Function to check train availability and update UI
-function checkTrainAvailability() {
-    const trainNumber = document.getElementById('train-number').value;
-    const departureStation = document.getElementById('departure-station').value;
-    const arrivalStation = document.getElementById('arrival-station').value;
-    const classOfTravel = document.getElementById('class-of-travel').value;
-    const passengerName = document.getElementById('passenger-name').value;
-    const passengerAge = document.getElementById('passenger-age').value;
-    const journeyDate = document.getElementById('journey-date').value;
-
-    // Query Firestore for the train and seats data
-    db.collection('seats')
-      .where('train number', '==', trainNumber)
-      .where('station name', '==', departureStation) // Assuming you want to reduce seats at the arrival station
-      .get()
-      .then(querySnapshot => {
-            if (querySnapshot.empty) {
-                alert(`Train ${trainNumber} from ${departureStation} to ${arrivalStation} not found.`);
-                return;
-            }
-
-            querySnapshot.forEach(doc => {
-                const seatsData = doc.data();
-                const distance = parseInt(seatsData.distance);
                 const ticketPrice = calculateTicketPrice(distance, classOfTravel);
-                if (availableSeats <= 0) {
-                    alert("No seats available for this train.");
-                    return;
-                }
-                // Reduce the number of seats based on the class of travel
-                let newAvailableSeats = seatsData.available_seats;
-                switch (classOfTravel) {
-                    case "AC":
-                        newAvailableSeats -= 1;
-                        break;
-                    case "SL":
-                        newAvailableSeats -= 1;
-                        break;
-                    case "2S":
-                        newAvailableSeats -= 1;
-                        break;
-                }
-
-                // Update the seat document with the new available seats count
-                db.collection('seats').doc(doc.id).update({
-                    available_seats: newAvailableSeats
+    
+                // Update user's balance and reservation in Firestore
+                db.collection('users').doc(userId).get().then(userDoc => {
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        const currentBalance = userData.balance;
+    
+                        if (currentBalance >= ticketPrice) {
+                            const newBalance = currentBalance - ticketPrice;
+    
+                            db.collection('users').doc(userId).update({
+                                balance: newBalance
+                            }).then(() => {
+                                db.collection('reservations').add({
+                                    user_id: userId,
+                                    passenger_name: passengerName,
+                                    passenger_age: passengerAge,
+                                    journey_date: journeyDate,
+                                    train_number: trainNumber,
+                                    departure_station: departureStation,
+                                    arrival_station: arrivalStation,
+                                    class_of_travel: classOfTravel,
+                                    ticket_price: ticketPrice
+                                }).then(() => {
+                                    document.getElementById('confirmationText').innerText =` Your ticket for train ${trainNumber} from ${departureStation} to ${arrivalStation} has been reserved.`;
+                                    $('#confirmationModal').modal('show');
+                                }).catch(error => {
+                                    console.error("Error adding reservation:", error);
+                                });
+                            }).catch(error => {
+                                console.error("Error updating user balance:", error);
+                            });
+                        } else {
+                            alert("Insufficient balance.");
+                        }
+                    } else {
+                        console.error("User data not found.");
+                    }
+                }).catch(error => {
+                    console.error("Error fetching user data:", error);
                 });
-
-                // Store the reservation in the reservations collection
-                db.collection('reservations').add({
-                    passenger_name: passengerName,
-                    passenger_age: passengerAge,
-                    journey_date: journeyDate,
-                    train_number: trainNumber,
-                    departure_station: departureStation,
-                    arrival_station: arrivalStation,
-                    class_of_travel: classOfTravel,
-                    ticket_price: ticketPrice
-                });
-
-                // Update UI elements
-                document.getElementById('ticket-price').innerText = `₹ ${ticketPrice}.00`;
-                document.getElementById('pricing-distance').innerText = `Distance: ${distance} km`;
-                document.getElementById('pricing-class').innerText = `Class of Travel: ${classOfTravel}`;
-
-                // Show confirmation modal
-                $('#confirmationModal').modal('show');
-                document.getElementById('confirmationText').innerText = `Your ticket for train ${trainNumber} from ${departureStation} to ${arrivalStation} has been reserved.`;
-
-                // Redirect to payment page based on selected payment method
-                const paymentMethod = document.getElementById('payment-method').value;
-                if (paymentMethod === 'credit-card') {
-                    window.location.href = 'credit-card.html'; // Replace with your actual credit card page
-                } else if (paymentMethod === 'wallet') {
-                    window.location.href = 'ewallet.html'; // Replace with your actual e-wallet page
-                }
+            })
+            .catch(error => {
+                console.error("Error fetching seats data:", error);
+                alert("Error fetching seats data. Please try again later.");
             });
-        })
-      .catch(error => {
-            console.error("Error fetching seats data:", error);
-            alert("Error fetching seats data. Please try again later.");
-        });
-}
-
-// Event listener for form submission
-document.getElementById('reservation-form').addEventListener('submit', function(event) {
-   var ticketPrice = document.getElementById('ticket-price').value;
-   console.log( "price sending is", `${ticketPrice}`)
-event.preventDefault(); // Prevent form submission
-window.location.href = `ewallet.html?price=1200`   ;
-// Call function to check train availability
-checkTrainAvailability();
-});
-</script>
+    }
+    
+    document.getElementById('reservation-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        checkTrainAvailabilityAndReserve();
+    });
+    
+    </script>
+    
 
 </body>
 </html>

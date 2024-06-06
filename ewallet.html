@@ -155,10 +155,12 @@
                         <button class="btn btn-custom mx-2" id="showAddCardModalBtn">
                             <i class="fas fa-credit-card"></i> Add Card
                         </button>
-                        <button class="btn btn-custom mx-2" id="paymentBtn">
-                            <i class="fas fa-wallet"></i> Make Payment
-                        </button>
                     </div>
+                    <button class="btn btn-custom" id="payNowButton" data-amount="0">
+    <i class="fas fa-wallet"></i> Pay Now
+</button>
+<div class="balance">Payment Amount: ₹<span id="payment-amount">0.00</span></div>
+
 
                     <!-- Card Selection -->
                     <div class="mt-4 text-center">
@@ -215,7 +217,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script>
-       var firebaseConfig = {
+         var firebaseConfig = {
             apiKey: "AIzaSyCzF2lQO3f2O7BxCMStuwTZXiP5GCccH48",
             authDomain: "railmitra-29557.firebaseapp.com",
             projectId: "railmitra-29557",
@@ -227,137 +229,139 @@
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        var db = firebase.firestore();
+        var db = firebase        .firestore();
 
-        firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
-                console.log("User is logged in:", user.email);
-                document.getElementById('username').innerText = user.email;
-                loadUserData(user.uid);
-            } else {
-                console.log("User is logged out.");
-                showLoginMessage();
-                window.location.href = "login.html";
-            }
-        });
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+        console.log("User is logged in:", user.email);
+        document.getElementById('username').innerText = user.email;
+        loadUserData(user.uid);
+    } else {
+        console.log("User is logged out.");
+        showLoginMessage();
+        window.location.href = "login.html";
+    }
+});
 
-        function showLoginMessage() {
-            var walletCard = document.querySelector('.wallet-card');
-            walletCard.innerHTML = `
-                <div class="alert alert-danger" role="alert">
-                    You are not logged in. Please <a href="login.html">login</a> to access your E-Wallet.
-                </div>
-            `;
-        }
+function showLoginMessage() {
+    var walletCard = document.querySelector('.wallet-card');
+    walletCard.innerHTML = `
+        <div class="alert alert-danger" role="alert">
+            You are not logged in. Please <a href="login.html">login</a> to access your E-Wallet.
+        </div>
+    `;
+}
 
-        function loadUserData(userId) {
-            db.collection('users').doc(userId).get().then(doc => {
-                if (doc.exists) {
-                    var data = doc.data();
-                    document.getElementById('currentBalance').innerText = data.balance;
-                    loadTransactions(userId);
-                    loadCards(userId);
-                } else {
-                    db.collection('users').doc(userId).set({
-                        balance: 0
-                    });
-                }
+function loadUserData(userId) {
+    db.collection('users').doc(userId).get().then(doc => {
+        if (doc.exists) {
+            var data = doc.data();
+            document.getElementById('currentBalance').innerText = data.balance;
+            loadTransactions(userId);
+            loadCards(userId);
+        } else {
+            db.collection('users').doc(userId).set({
+                balance: 0
             });
         }
+    });
+}
 
-        function loadTransactions(userId) {
-            db.collection('users').doc(userId).collection('transactions').orderBy('date', 'desc').get().then(querySnapshot => {
-                var tableBody = document.getElementById('transactionTableBody');
-                tableBody.innerHTML = '';
-                querySnapshot.forEach(doc => {
-                    var transaction = doc.data();
-                    var row = `<tr>
-                                <td>${transaction.date.toDate().toLocaleDateString()}</td>
-                                <td>${transaction.description}</td>
-                                <td>₹${transaction.amount}</td>
-                                <td>${transaction.type}</td>
-                                <td>${transaction.cardNumber}</td>
-                               </tr>`;
-                    tableBody.innerHTML += row;
-                });
-            });
-        }
-
-        function loadCards(userId) {
-            db.collection('users').doc(userId).collection('cards').get().then(querySnapshot => {
-                var cardSelect = document.getElementById('cardSelect');
-                cardSelect.innerHTML = '<option value="">Select Card</option>';
-                querySnapshot.forEach(doc => {
-                    var card = doc.data();
-                    var option = `<option value="${doc.id}">${card.cardNumber} - ${card.cardHolder}</option>`;
-                    cardSelect.innerHTML += option;
-                });
-            });
-        }
-
-        document.getElementById('addFundsBtn').addEventListener('click', function() {
-            var selectedCard = document.getElementById('cardSelect').value;
-            if (selectedCard) {
-                var amount = prompt('Enter amount to add:');
-                if (amount && !isNaN(amount)) {
-                    var userId = firebase.auth().currentUser.uid;
-                    updateBalance(userId, parseFloat(amount), 'Credit', selectedCard);
-                }
-            } else {
-                alert('Please select a card.');
-            }
+function loadTransactions(userId) {
+    db.collection('users').doc(userId).collection('transactions').orderBy('date', 'desc').get().then(querySnapshot => {
+        var tableBody = document.getElementById('transactionTableBody');
+        tableBody.innerHTML = '';
+        querySnapshot.forEach(doc => {
+            var transaction = doc.data();
+            var row = `<tr>
+                        <td>${transaction.date.toDate().toLocaleDateString()}</td>
+                        <td>${transaction.description}</td>
+                        <td>₹${transaction.amount}</td>
+                        <td>${transaction.type}</td>
+                        <td>${transaction.cardNumber}</td>
+                       </tr>`;
+            tableBody.innerHTML += row;
         });
+    });
+}
 
-        document.getElementById('removeFundsBtn').addEventListener('click', function() {
-            var selectedCard = document.getElementById('cardSelect').value;
-            if (selectedCard) {
-                var amount = prompt('Enter amount to remove:');
-                if (amount && !isNaN(amount)) {
-                    var userId = firebase.auth().currentUser.uid;
-                    updateBalance(userId, -parseFloat(amount), 'Debit', selectedCard);
-                }
-            } else {
-                alert('Please select a card.');
-            }
+function loadCards(userId) {
+    db.collection('users').doc(userId).collection('cards').get().then(querySnapshot => {
+        var cardSelect = document.getElementById('cardSelect');
+        cardSelect.innerHTML = '<option value="">Select Card</option>';
+        querySnapshot.forEach(doc => {
+            var card = doc.data();
+            var option = <option value="${doc.id}">${card.cardNumber} - ${card.cardHolder}</option>;
+            cardSelect.innerHTML += option;
         });
+    });
+}
 
-        function updateBalance(userId, amount, type, cardId) {
-            var userRef = db.collection('users').doc(userId);
-            userRef.get().then(doc => {
-                if (doc.exists) {
-                    var newBalance = doc.data().balance + amount;
-                    userRef.update({
-                        balance: newBalance
-                    }).then(() => {
-                        var cardRef = userRef.collection('cards').doc(cardId);
-                        cardRef.get().then(cardDoc => {
-                            if (cardDoc.exists) {
-                                var cardNumber = cardDoc.data().cardNumber;
-                                userRef.collection('transactions').add({
-                                    date: firebase.firestore.Timestamp.now(),
-                                    description: type === 'Credit' ? 'Added Funds' : 'Removed Funds',
-                                    amount: Math.abs(amount),
-                                    type: type,
-                                    cardNumber: cardNumber
-                                }).then(() => {
-                                    loadUserData(userId);
-                                });
-                            }
+document.getElementById('addFundsBtn').addEventListener('click', function() {
+    var selectedCard = document.getElementById('cardSelect').value;
+    if (selectedCard) {
+        var amount = prompt('Enter amount to add:');
+        if (amount && !isNaN(amount)) {
+            var userId = firebase.auth().currentUser.uid;
+            updateBalance(userId, parseFloat(amount), 'Credit', selectedCard);
+        }
+    } else {
+        alert('Please select a card.');
+    }
+});
+
+document.getElementById('removeFundsBtn').addEventListener('click', function() {
+    var selectedCard = document.getElementById('cardSelect').value;
+    if (selectedCard) {
+        var amount = prompt('Enter amount to remove:');
+        if (amount && !isNaN(amount)) {
+            var userId = firebase.auth().currentUser.uid;
+            updateBalance(userId, -parseFloat(amount), 'Debit', selectedCard);
+        }
+    } else {
+        alert('Please select a card.');
+    }
+});
+
+function updateBalance(userId, amount, type, cardId) {
+    var userRef = db.collection('users').doc(userId);
+    userRef.get().then(doc => {
+        if (doc.exists) {
+            var newBalance = doc.data().balance + amount;
+            userRef.update({
+                balance: newBalance
+            }).then(() => {
+                var cardRef = userRef.collection('cards').doc(cardId);
+                cardRef.get().then(cardDoc => {
+                    if (cardDoc.exists) {
+                        var cardNumber = cardDoc.data().cardNumber;
+                        userRef.collection('transactions').add({
+                            date: firebase.firestore.Timestamp.now(),
+                            description: type === 'Credit' ? 'Added Funds' : 'Removed Funds',
+                            amount: Math.abs(amount),
+                            type: type,
+                            cardNumber: cardNumber
+                        }).then(() => {
+                            loadUserData(userId);
                         });
-                    });
-                }
+                    }
+                });
             });
         }
+    });
+}
 
-        document.getElementById('paymentBtn').addEventListener('click', function() {
-            var amount = prompt('Enter payment amount:');
-            if (amount && !isNaN(amount)) {
-                var userId = firebase.auth().currentUser.uid;
-                makePayment(userId, parseFloat(amount));
-            }
-        });
+document.getElementById('payNowButton').addEventListener('click', function() {
+    var amountToPay = parseFloat(document.getElementById('payment-amount').innerText.replace('₹', ''));
+    if (amountToPay > 0) {
+        var userId = firebase.auth().currentUser.uid;
+        makePayment(userId, amountToPay);
+    } else {
+        alert('Please enter a valid payment amount.');
+    }
+});
 
-        function makePayment(userId, amount) {
+function makePayment(userId, amount) {
     console.log("Attempting to make payment...");
     var userRef = db.collection('users').doc(userId);
     userRef.get().then(doc => {
@@ -390,7 +394,6 @@
     });
 }
 
-
 function showConfirmationMessage(amount) {
     var confirmationDiv = document.createElement('div');
     confirmationDiv.classList.add('alert', 'alert-success', 'text-center', 'mt-3');
@@ -407,44 +410,44 @@ function showConfirmationMessage(amount) {
     }, 3000);
 }
 
+document.getElementById('logoutBtn').addEventListener('click', function() {
+    firebase.auth().signOut().then(() => {
+        console.log('User logged out.');
+        showLoginMessage();
+        window.location.href = "login.html";
+    }).catch((error) => {
+        console.error('Error logging out:', error);
+    });
+});
 
-        document.getElementById('logoutBtn').addEventListener('click', function() {
-            firebase.auth().signOut().then(() => {
-                console.log('User logged out.');
-                showLoginMessage();
-                window.location.href = "login.html";
-            }).catch((error) => {
-                console.error('Error logging out:', error);
-            });
+document.getElementById('showAddCardModalBtn').addEventListener('click', function() {
+    $('#addCardModal').modal('show');
+});
+
+document.getElementById('addCardForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const user = firebase.auth().currentUser;
+    if (user) {
+        const cardNumber = document.getElementById('cardNumber').value;
+        const cardHolder = document.getElementById('cardHolder').value;
+        const expiryDate = document.getElementById('expiryDate').value;
+        const cvv = document.getElementById('cvv').value;
+
+        firebase.firestore().collection('users').doc(user.uid).collection('cards').add({
+            cardNumber: cardNumber,
+            cardHolder: cardHolder,
+            expiryDate: expiryDate,
+            cvv: cvv
+        }).then(() => {
+            alert('Card added successfully');
+            $('#addCardModal').modal('hide');
+            loadCards(user.uid);
+        }).catch(error => {
+            console.error("Error adding card: ", error);
         });
+    }
+});
 
-        document.getElementById('showAddCardModalBtn').addEventListener('click', function() {
-            $('#addCardModal').modal('show');
-        });
-
-        document.getElementById('addCardForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const user = firebase.auth().currentUser;
-            if (user) {
-                const cardNumber = document.getElementById('cardNumber').value;
-                const cardHolder = document.getElementById('cardHolder').value;
-                const expiryDate = document.getElementById('expiryDate').value;
-                const cvv = document.getElementById('cvv').value;
-
-                firebase.firestore().collection('users').doc(user.uid).collection('cards').add({
-                    cardNumber: cardNumber,
-                    cardHolder: cardHolder,
-                    expiryDate: expiryDate,
-                    cvv: cvv
-                }).then(() => {
-                    alert('Card added successfully');
-                    $('#addCardModal').modal('hide');
-                    loadCards(user.uid);
-                }).catch(error => {
-                    console.error("Error adding card: ", error);
-                });
-            }
-        });
-    </script>
+</script>
 </body>
 </html>
