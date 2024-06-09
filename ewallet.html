@@ -136,7 +136,7 @@
                                 <th>Description</th>
                                 <th>Amount</th>
                                 <th>Type</th>
-                            
+                                <th>Card Number</th>
                             </tr>
                         </thead>
                         <tbody id="transactionTableBody">
@@ -229,7 +229,7 @@
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        var db = firebase.firestore();
+        var db = firebase        .firestore();
 
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
@@ -278,7 +278,7 @@ function loadTransactions(userId) {
                         <td>${transaction.description}</td>
                         <td>₹${transaction.amount}</td>
                         <td>${transaction.type}</td>
-                        <!-- <td>${transaction.cardNumber}</td> -->
+                        <td>${transaction.cardNumber}</td>
                        </tr>`;
             tableBody.innerHTML += row;
         });
@@ -291,14 +291,11 @@ function loadCards(userId) {
         cardSelect.innerHTML = '<option value="">Select Card</option>';
         querySnapshot.forEach(doc => {
             var card = doc.data();
-            var option = document.createElement('option');
-            option.value = doc.id;
-            option.textContent = card.cardNumber + ' - ' + card.cardHolder;
-            cardSelect.appendChild(option);
+            var option = `<option value="${doc.id}">${card.cardNumber} - ${card.cardHolder}</option>`;
+            cardSelect.innerHTML += option;
         });
     });
 }
-
 
 document.getElementById('addFundsBtn').addEventListener('click', function() {
     var selectedCard = document.getElementById('cardSelect').value;
@@ -454,3 +451,4 @@ document.getElementById('addCardForm').addEventListener('submit', function(event
 </script>
 </body>
 </html>
+
